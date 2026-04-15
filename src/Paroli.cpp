@@ -1,36 +1,39 @@
 #include "../include/Paroli.h"
 #include <cstdlib>
 
-/*
- * @brief
- * @param
- * @return
- * */
-Bet Paroli::calNextBet(BetResult const &prevResult) {
-    if (prevResult == BetResult::Win) {
-        iConsecutiveWins++;
+Paroli::Paroli(double baseBet, int targetWins) : ABettingStrategy(baseBet)
+{
+    this->consecutiveWins = 0;
+    this->targetWins = targetWins;
+}
 
-        if (iConsecutiveWins >= iTargetWins) {
-            dCurrentBet = dBaseBet;
-            iConsecutiveWins = 0;
-        } else {
-            dCurrentBet *= 2;
+Bet Paroli::calNextBet(BetResult const &prevResult)
+{
+    if (prevResult == BetResult::Win)
+    {
+        consecutiveWins++;
+        if (consecutiveWins >= targetWins)
+        {
+            dCurrentBet = dBaseBet; // Chốt lời
+            consecutiveWins = 0;
         }
-    } else {
-        dCurrentBet = dBaseBet;
-        iConsecutiveWins = 0;
+        else
+        {
+            dCurrentBet *= 2; // Nhân đôi khi đang đà thắng
+        }
+    }
+    else
+    {
+        dCurrentBet = dBaseBet; // Thua thì đứt chuỗi
+        consecutiveWins = 0;
     }
 
-    BetType side{(rand() % 2 == 0) ? BetType::Xiu : BetType::Tai};
-
-    return Bet{side, dCurrentBet};
+    BetType side = (rand() % 2 == 0) ? BetType::Xiu : BetType::Tai;
+    return Bet(side, dCurrentBet);
 }
-/*
- * @brief
- * @param
- * @return
- * */
-void Paroli::reset() {
-    dCurrentBet = dBaseBet;
-    iConsecutiveWins = 0;
+
+void Paroli::reset()
+{
+    ABettingStrategy::reset(); // Gọi hàm của lớp cha để reset tiền
+    this->consecutiveWins = 0; // Tự reset thêm biến đếm của lớp con
 }

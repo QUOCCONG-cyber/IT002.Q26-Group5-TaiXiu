@@ -1,24 +1,35 @@
 #pragma once
 
-/* SCOPED enum */
-enum class BetType { Tai, Xiu };
-enum class BetResult { Win, Lose };
-
-/**/
-struct Bet {
-    Bet(BetType, double);
-
-    BetType type;
-    double dAmount;
+enum class BetType
+{
+  Tai,
+  Xiu
+};
+enum class BetResult
+{
+  Win,
+  Lose
 };
 
-/**/
-struct ABettingStrategy {
-    ABettingStrategy(double, double);
+struct Bet
+{
+  BetType type;
+  double dAmount;
+  // Nên có Constructor để tạo Bet nhanh
+  Bet(BetType t, double a) : type(t), dAmount(a) {}
+};
 
-    virtual Bet calNextBet(BetResult const &) = 0;
-    virtual void reset();
+struct ABettingStrategy
+{
+  // 2 hàm này bắt buộc lớp con phải tự viết (vì có = 0)
+  virtual Bet calNextBet(BetResult const &prevResult) = 0;
+  virtual void reset();
 
-  protected:
-    double dBaseBet, dCurrentBet;
+  virtual ~ABettingStrategy() = default;
+
+protected:
+  double dBaseBet, dCurrentBet;
+
+  // Constructor cho lớp cha
+  ABettingStrategy(double baseBet) : dBaseBet(baseBet), dCurrentBet(baseBet) {}
 };

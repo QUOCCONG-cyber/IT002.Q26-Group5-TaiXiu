@@ -1,51 +1,51 @@
-#include "../include/Fibonacci.h"
+#include "Fibonacci.h"
 #include <cstdlib>
 
-/*
- * @brief
- * @param
- * @return
- * */
-int Fibonacci::getFibonacciMultiplier(int n) {
+Fibonacci::Fibonacci(double baseBet) : ABettingStrategy(baseBet)
+{
+    this->currentIndex = 0;
+}
+
+int Fibonacci::getFibonacciMultiplier(int n)
+{
     if (n <= 0)
         return 1;
     if (n == 1)
         return 1;
 
     int a = 1, b = 1, c = 2;
-    for (int i = 2; i <= n; i++) {
+    for (int i = 2; i <= n; i++)
+    {
         c = a + b;
         a = b;
         b = c;
     }
     return c;
 }
-/*
- * @brief
- * @param
- * @return
- * */
-Bet Fibonacci::calNextBet(BetResult const &prevResult) {
-    if (prevResult == BetResult::Win) {
-        iCurrentIndex -= 2;
-        if (iCurrentIndex < 0) {
-            iCurrentIndex = 0;
+
+Bet Fibonacci::calNextBet(BetResult const &prevResult)
+{
+    if (prevResult == BetResult::Win)
+    {
+        currentIndex -= 2;
+        if (currentIndex < 0)
+        {
+            currentIndex = 0;
         }
-    } else {
-        iCurrentIndex++;
     }
-    dCurrentBet = dBaseBet * getFibonacciMultiplier(iCurrentIndex);
+    else
+    {
+        currentIndex++;
+    }
 
-    BetType side{(rand() % 2 == 0) ? BetType::Xiu : BetType::Tai};
+    dCurrentBet = dBaseBet * getFibonacciMultiplier(currentIndex);
 
-    return Bet{side, dCurrentBet};
+    BetType side = (rand() % 2 == 0) ? BetType::Xiu : BetType::Tai;
+    return Bet(side, dCurrentBet);
 }
-/*
- * @brief
- * @param
- * @return
- * */
-void Fibonacci::reset() {
-    dCurrentBet = dBaseBet;
-    iCurrentIndex = 0;
+
+void Fibonacci::reset()
+{
+    ABettingStrategy::reset(); // Gọi hàm của lớp cha để reset tiền
+    this->currentIndex = 0;    // Tự reset thêm biến vị trí của con
 }
