@@ -4,34 +4,42 @@
 using namespace std;
 
 /*
- * @brief Khởi tạo CSVExporter với tên file đầu ra
- * @param filename Tên file CSV cần ghi
+ * @brief Constructor — lưu tên file để dùng khi ghi CSV
+ *
+ * Ví dụ: CSVExporter exporter("results.csv")
+ * → sFilename = "results.csv", dùng cho tất cả lần ghi sau đó
  */
 CSVExporter::CSVExporter(const string& filename) : sFilename(filename) {}
 
 /*
- * @brief Ghi toàn bộ danh sách kết quả các ván chơi ra file CSV
+ * @brief Ghi danh sách kết quả 1 chiến thuật vào file CSV
  *
- * Format mỗi dòng: Bet Side, Bet Amount, Result, Current Bankroll
- * Nếu không mở được file thì thoát im lặng.
+ * Dùng ios::app để append — nhiều chiến thuật ghi nối tiếp vào cùng 1 file
+ * mà không ghi đè nhau. writeHeader chỉ true cho chiến thuật đầu tiên.
  *
- * @param records Danh sách RoundRecord chứa thông tin từng ván
+ * @param strategyName Tên chiến thuật — xuất hiện ở cột Strategy trong CSV
+ * @param records      Danh sách RoundRecord chứa kết quả từng ván
+ * @param writeHeader  true → ghi dòng header (chỉ dùng cho chiến thuật đầu tiên)
  */
-void CSVExporter::exportToCSV(const vector<RoundRecord>& records) {
-    ofstream file(sFilename);
-    if (!file.is_open()) {
-        return;
+void CSVExporter::exportToCSV(const string& strategyName,
+                               const vector<RoundRecord>& records,
+                               bool writeHeader) { // default = false đã khai báo trong .h
+    // writeHeader=true → tạo file mới (ios::out), false → ghi nối tiếp (ios::app)
+    ofstream file(sFilename, writeHeader ? ios::out : ios::app);
+    if (!file.is_open()) return;
+
+    // Chỉ ghi header 1 lần duy nhất cho toàn bộ file
+    if (writeHeader)
+        file << "Strategy,Round,BetSide,BetAmount,Result,Bankroll\n";
+
+    // Ghi từng ván — round đếm từ 1
+    int round = 1;
+    for (const auto& r : records) {
+        file << strategyName                                       << ","
+             << round++                                           << ","
+             << (r.bet.type == BetType::Xiu ? "Xiu" : "Tai")     << ","
+             << r.bet.dAmount                                     << ","
+             << (r.result == BetResult::Win ? "Win" : "Lose")    << ","
+             << r.dCurrentBankroll                                << "\n";
     }
-
-    // Header
-    file << "Bet Side,Bet Amount,Result,Current Bankroll\n";
-
-    for (const auto& record : records) {
-        file << (record.bet.type == BetType::Xiu ? "Xiu" : "Tai") << ","
-             << record.bet.dAmount                                  << ","
-             << (record.result == BetResult::Win ? "Win" : "Lose") << ","
-             << record.dCurrentBankroll                             << "\n";
-    }
-
-    file.close();
 }

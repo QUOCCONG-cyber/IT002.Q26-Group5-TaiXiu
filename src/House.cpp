@@ -23,7 +23,7 @@ double House::getMaxBet()         const { return dMaxBet; }
  * @param amount Số tiền muốn cược
  * @return Số tiền hợp lệ
  */
-double House::clampBet(double amount) const {
+double House::limitBet(double amount) const {
     if (amount < dMinBet) return dMinBet;
     if (amount > dMaxBet) return dMaxBet;
     return amount;

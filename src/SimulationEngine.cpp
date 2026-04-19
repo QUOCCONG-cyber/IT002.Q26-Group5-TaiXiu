@@ -74,22 +74,11 @@ vector<RoundRecord> SimulationEngine::runOne(StrategyFactory& factory) {
  * @return true nếu mở/ghi file thành công
  */
 bool SimulationEngine::exportCSV(string const& filename) const {
-    ofstream file(filename);
-    if (!file.is_open()) return false;
-
-    // Header
-    file << "Strategy,Round,Bet Side,Bet Amount,Result,Bankroll\n";
-
+    CSVExporter exporter(filename);
+    bool first = true;
     for (auto const& [name, records] : results) {
-        int round = 1;
-        for (auto const& r : records) {
-            file << name                                               << ","
-                 << round++                                           << ","
-                 << (r.bet.type == BetType::Xiu ? "Xiu" : "Tai")     << ","
-                 << r.bet.dAmount                                     << ","
-                 << (r.result == BetResult::Win ? "Win" : "Lose")    << ","
-                 << r.dCurrentBankroll                                << "\n";
-        }
+        exporter.exportToCSV(name, records, first); // first=true → ghi header lần đầu
+        first = false;
     }
     return true;
 }

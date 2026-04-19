@@ -8,7 +8,7 @@ public:
     double getCommissionRate() const;
     double getMinBet()         const;
     double getMaxBet()         const;
-    double clampBet(double amount) const;
+    double limitBet(double amount) const;
 
 private:
     double dCommissionRate;
