@@ -25,8 +25,6 @@ using StrategyFactory = std::function<std::unique_ptr<ABettingStrategy>()>;
  * xúc xắc giống nhau → so sánh công bằng.
  */
 class SimulationEngine {
-
-  private:
     int total_rounds;
     double initial_bankroll;
     double base_bet;

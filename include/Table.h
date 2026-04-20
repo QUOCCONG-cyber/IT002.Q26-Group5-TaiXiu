@@ -14,9 +14,8 @@ class Table {
     vector<RoundRecord> records;
 
   public:
-    Table(const House &, Player &&);
+    Table(House const &, Player &&);
 
     void play();
-    /* QA: why are there 2 `const` */
-    const std::vector<RoundRecord> &getRecords() const;
+    vector<RoundRecord> const &getRecords() const;
 };

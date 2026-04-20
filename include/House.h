@@ -13,5 +13,5 @@ class House : public Actor {
     double getMinBet() const;
     double getMaxBet() const;
 
-    double clampBet(double) const;
+    double limitBet(double) const;
 };

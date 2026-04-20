@@ -13,7 +13,8 @@ class Player : public Actor {
     Player(double);
     Player(Player &&) = default;
 
+    Bet getCurrentBet() const;
+
     void setStrategy(unique_ptr<ABettingStrategy>);
     void placeBet(BetResult const &);
-    Bet getCurrentBet() const;
 };
