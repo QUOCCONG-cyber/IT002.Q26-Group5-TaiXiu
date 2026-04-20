@@ -32,7 +32,7 @@ void Table::play() {
     Bet currentBet = player.getCurrentBet();
 
     // Ép bet vào giới hạn [minBet, maxBet] của House trước
-    currentBet.dAmount = house.clampBet(currentBet.dAmount);
+    currentBet.dAmount = house.limitBet(currentBet.dAmount);
 
     // Sau đó cap tại balance — tránh trường hợp balance < minBet bị âm
     if (currentBet.dAmount > player.getBalance())
